@@ -16,7 +16,7 @@ export async function createQuickGame(ctx: Context) {
   });
 
   await ctx.reply(
-    `🤠 Mesa Hold'em creada\n\n1. @${user.username ?? user.first_name}\n\nEsperando jugadores...\nMesa: ${table.id}`,
+    `🤠 PokerFace - Mesa rápida\n\n🪑 Jugadores (1/8)\n\n1. @${user.username ?? user.first_name}\n2. -\n3. -\n4. -\n5. -\n6. -\n7. -\n8. -`,
     Markup.inlineKeyboard([
       Markup.button.callback('🪑 Unirse a la partida', `join:${table.id}`),
     ])
