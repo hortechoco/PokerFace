@@ -3,32 +3,32 @@ import { supabase } from '../supabase/client.js';
 export const MAX_PLAYERS = 8;
 export const STARTING_CHIPS = 1000;
 
-export type TableStatus = 'waiting' | 'running' | 'finished' | 'cancelled';
-
 export async function createQuickTable(input: {
   telegramGroupId: string;
   creatorTelegramId: string;
   username: string;
 }) {
-  const { data: table, error } = await supabase
-    .from('poker_tables')
-    .insert({
-      telegram_group_id: input.telegramGroupId,
-      status: 'waiting',
-      max_players: MAX_PLAYERS,
-    })
-    .select()
-    .single();
-
-  if (error) throw error;
-
-  await supabase.from('table_players').insert({
-    table_id: table.id,
-    telegram_id: input.creatorTelegramId,
-    starting_chips: STARTING_CHIPS,
-    chips_current: STARTING_CHIPS,
-    seat_number: 1,
+  const { data, error } = await supabase.rpc('create_quick_table', {
+    p_telegram_group_id: input.telegramGroupId,
+    p_creator_telegram_id: input.creatorTelegramId,
+    p_username: input.username,
   });
 
-  return table;
+  if (error) throw error;
+  return data;
+}
+
+export async function joinQuickTable(input: {
+  tableId: string;
+  telegramId: string;
+  username: string;
+}) {
+  const { data, error } = await supabase.rpc('join_quick_table', {
+    p_table_id: input.tableId,
+    p_telegram_id: input.telegramId,
+    p_username: input.username,
+  });
+
+  if (error) throw error;
+  return data;
 }
