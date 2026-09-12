@@ -1,5 +1,6 @@
 import { Context, Markup } from 'telegraf';
-import { createQuickTable } from '../game/tables.js';
+import { createQuickTable, setLobbyMessageId } from '../game/tables.js';
+import { renderLobby } from './lobby.js';
 
 export async function createQuickGame(ctx: Context) {
   const telegramGroupId = String(ctx.chat?.id ?? '');
@@ -9,16 +10,23 @@ export async function createQuickGame(ctx: Context) {
     return ctx.reply('No se pudo crear la partida.');
   }
 
-  const table = await createQuickTable({
+  const tableId = await createQuickTable({
     telegramGroupId,
     creatorTelegramId: String(user.id),
     username: user.username ?? user.first_name,
   });
 
-  await ctx.reply(
-    `🤠 PokerFace - Mesa rápida\n\n🪑 Jugadores (1/8)\n\n1. @${user.username ?? user.first_name}\n2. -\n3. -\n4. -\n5. -\n6. -\n7. -\n8. -`,
+  const message = await ctx.reply(
+    renderLobby([
+      {
+        username: user.username ?? null,
+        telegram_id: String(user.id),
+      },
+    ]),
     Markup.inlineKeyboard([
-      Markup.button.callback('🪑 Unirse a la partida', `join:${table.id}`),
+      Markup.button.callback('🪑 Unirse a la partida', `join:${tableId}`),
     ])
   );
+
+  await setLobbyMessageId(tableId, message.message_id);
 }
