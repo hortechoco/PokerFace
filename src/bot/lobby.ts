@@ -1,8 +1,23 @@
-export function renderLobby(players: Array<{username?: string, telegram_id?: string}>, max = 8) {
-  const rows = Array.from({length:max}, (_,i) => {
+type LobbyPlayer = { username?: string | null; telegram_id?: string | null };
+
+type LobbyStatus = 'waiting' | 'running' | 'expired' | 'cancelled';
+
+export function renderLobby(
+  players: LobbyPlayer[],
+  max = 8,
+  status: LobbyStatus = 'waiting',
+) {
+  const rows = Array.from({ length: max }, (_, i) => {
     const p = players[i];
-    return `${i+1}. ${p ? '@'+(p.username ?? p.telegram_id) : '-'}`;
+    return `${i + 1}. ${p ? '@' + (p.username ?? p.telegram_id) : '-'}`;
   }).join('\n');
 
-  return `🤠 PokerFace - Mesa rápida\n\n🪑 Jugadores (${players.length}/${max})\n\n${rows}\n\n⏳ Esperando jugadores...`;
+  const footer = {
+    waiting: '⏳ Esperando jugadores...',
+    running: '🟢 Partida iniciada',
+    expired: '⌛ Mesa expirada',
+    cancelled: '⛔ Mesa cancelada',
+  }[status];
+
+  return `🤠 PokerFace - Mesa rápida\n\n🪑 Jugadores (${players.length}/${max})\n\n${rows}\n\n${footer}`;
 }
