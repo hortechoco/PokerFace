@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import type { StateResponse } from '../types';
 import { PlayingCard, CardBack } from './PlayingCard';
 import { Seat } from './Seat';
+import { WinnerBanner } from './WinnerBanner';
 
 const STAGE_LABEL: Record<string, string> = {
   preflop: 'Preflop',
@@ -27,11 +29,30 @@ const SEAT_POSITIONS = [
   { top: 83, left: 87 }, // 7 - abajo-derecha
 ];
 
+const RESULT_DISPLAY_MS = 5000;
+
 export function Table({ state }: { state: StateResponse }) {
   const { game, players, me, hand } = state;
   const stageLabel = STAGE_LABEL[game.stage] ?? game.stage;
   const isMyTurn = me.seat_number === game.current_seat;
   const toCall = Math.max(0, game.current_bet - (hand?.round_contributed ?? 0));
+
+  // Muestra el cartel de resultado unos segundos cada vez que llega
+  // un last_result nuevo (identificado por su hand_number), aunque el
+  // backend ya haya repartido la siguiente mano por debajo.
+  const [shownHandNumber, setShownHandNumber] = useState<number | null>(null);
+  const [showResult, setShowResult] = useState(false);
+  const lastResult = game.last_result;
+
+  useEffect(() => {
+    if (!lastResult) return;
+    if (lastResult.hand_number === shownHandNumber) return;
+    setShownHandNumber(lastResult.hand_number);
+    setShowResult(true);
+    const t = setTimeout(() => setShowResult(false), RESULT_DISPLAY_MS);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastResult?.hand_number]);
 
   return (
     <>
@@ -44,6 +65,8 @@ export function Table({ state }: { state: StateResponse }) {
 
       <div className="table-wrap">
         <div className="felt">
+          {showResult && lastResult && <WinnerBanner result={lastResult} players={players} />}
+
           <div className="board-center">
             <div className="pot">
               <div className="amount">{game.pot.toLocaleString('es')} 🪙</div>
