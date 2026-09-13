@@ -440,3 +440,51 @@ button {
   text-align: center;
   min-height: 16px;
 }
+
+/* ---------- Winner overlay ---------- */
+
+.winner-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 20, 14, 0.6);
+  z-index: 5;
+  padding: 20px;
+  border-radius: 50% / 40%;
+}
+
+.winner-card {
+  background: linear-gradient(135deg, rgba(212, 175, 106, 0.2), rgba(9, 55, 38, 0.94));
+  border: 1px solid var(--gold);
+  border-radius: 16px;
+  padding: 18px 22px;
+  text-align: center;
+  max-width: 260px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.winner-glyph {
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+
+.winner-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ivory);
+}
+
+.winner-text strong {
+  color: var(--gold);
+}
+
+.winner-cards {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
