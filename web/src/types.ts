@@ -9,6 +9,21 @@ export interface PlayerView {
   bet?: number;
 }
 
+export interface WinnerHoleCards {
+  seat: number;
+  cards: string[];
+}
+
+export interface LastResult {
+  reason: 'showdown' | 'fold';
+  winners: number[];
+  hand_name: string | null;
+  winning_cards?: string[];
+  winner_hole_cards?: WinnerHoleCards[];
+  pot: number;
+  hand_number: number;
+}
+
 export interface GameView {
   stage: Stage;
   pot: number;
@@ -17,6 +32,7 @@ export interface GameView {
   current_bet: number;
   small_blind: number;
   big_blind: number;
+  last_result?: LastResult | null;
 }
 
 export interface MeView {
