@@ -121,23 +121,34 @@ button {
   flex: 1;
   padding: 6px 14px 10px;
   display: flex;
+  min-height: 0;
 }
 
 .felt {
   flex: 1;
   position: relative;
+  min-height: 460px;
   background:
     radial-gradient(ellipse at 50% 20%, var(--felt) 0%, var(--felt-dark) 78%);
   border: 10px solid var(--rail);
-  border-radius: 34px;
+  border-radius: 50% / 40%;
   box-shadow:
     inset 0 0 0 2px rgba(212, 175, 106, 0.18),
     inset 0 18px 40px rgba(0, 0, 0, 0.35),
     0 12px 30px rgba(0, 0, 0, 0.45);
-  padding: 18px 14px 14px;
+}
+
+/* Bote y cartas comunitarias, centrados en la mesa */
+.board-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  align-items: center;
+  gap: 10px;
+  width: 78%;
 }
 
 .pot {
@@ -146,14 +157,14 @@ button {
 
 .pot .amount {
   font-family: var(--display);
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
 }
 
 .pot .label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--muted);
   letter-spacing: 0.04em;
 }
@@ -161,20 +172,22 @@ button {
 .board {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  min-height: 62px;
+  gap: 5px;
+  min-height: 48px;
+  flex-wrap: nowrap;
 }
 
 .hole {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
+  margin-top: 4px;
 }
 
 .card {
-  width: 42px;
-  height: 60px;
-  border-radius: 6px;
+  width: 32px;
+  height: 46px;
+  border-radius: 5px;
   background: var(--ivory);
   color: var(--ink);
   display: flex;
@@ -182,14 +195,15 @@ button {
   justify-content: center;
   font-family: var(--display);
   font-weight: 600;
-  font-size: 19px;
+  font-size: 13px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
+  flex: none;
 }
 
 .hole .card {
-  width: 52px;
-  height: 74px;
-  font-size: 22px;
+  width: 30px;
+  height: 42px;
+  font-size: 12px;
 }
 
 .card.red {
@@ -201,56 +215,87 @@ button {
   border: 1.5px solid rgba(212, 175, 106, 0.5);
 }
 
-/* ---------- Seats ---------- */
+/* ---------- Seats: distribuidos alrededor de la mesa ovalada ---------- */
 
 .seats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  position: absolute;
+  inset: 0;
+}
+
+.seat-slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
 }
 
 .seat {
-  background: rgba(4, 20, 14, 0.55);
-  border: 1px solid rgba(246, 241, 230, 0.08);
-  border-radius: 12px;
-  padding: 8px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-width: 0;
-}
-
-.seat .who {
-  min-width: 0;
+  background: rgba(4, 20, 14, 0.72);
+  border: 1px solid rgba(246, 241, 230, 0.1);
+  border-radius: 14px;
+  padding: 6px 8px 5px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 2px;
+  width: 74px;
+  position: relative;
+}
+
+.seat .avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(212, 175, 106, 0.16);
+  color: var(--gold);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1px;
 }
 
 .seat .name {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .seat .chips {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
-.seat .flag {
+.seat .seat-bet {
+  position: absolute;
+  bottom: -11px;
   font-family: var(--display);
   font-size: 10px;
-  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--felt-dark);
+  background: var(--gold);
+  padding: 1px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.seat .flag {
+  font-family: var(--display);
+  font-size: 9px;
+  letter-spacing: 0.05em;
   color: var(--gold-dim);
 }
 
 .seat.folded {
-  opacity: 0.45;
+  opacity: 0.4;
 }
 
 .seat.turn {
@@ -259,15 +304,18 @@ button {
 }
 
 .seat.me {
-  background: rgba(212, 175, 106, 0.1);
+  width: 80px;
+  background: rgba(212, 175, 106, 0.14);
 }
 
 .seat .badge {
-  width: 6px;
-  height: 6px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--gold);
-  flex: none;
   animation: pulse 1.4s ease-in-out infinite;
 }
 

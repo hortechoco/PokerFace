@@ -6,6 +6,7 @@ export interface PlayerView {
   chips: number;
   folded: boolean;
   all_in: boolean;
+  bet?: number;
 }
 
 export interface GameView {
